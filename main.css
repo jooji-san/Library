@@ -1,0 +1,93 @@
+body {
+  background-color: #263238;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button {
+  font-weight: 600;
+}
+
+.add-btn {
+  margin: 20px;
+  padding: 5px;
+  color: #005005;
+}
+
+.info-div {
+  margin: 0 20px;
+  color: #eceff1;
+  display: flex;
+}
+
+.column {
+  margin-right: 5px;
+}
+
+.info-div p {
+  padding: 10px;
+  background-color: #607d8b ;
+  border-radius: 10px;
+  text-align: center;
+}
+
+p.col-title {
+  margin: 0;
+  background-color: #34515e;
+  font-size: 20px;
+}
+
+.col-btn {
+  margin: 0 7px;
+  display: flex;
+  flex-direction: column;
+}
+
+.empty {
+  height: 43px;
+}
+
+.btn-div {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.btn-div button {
+  padding: 5px;
+}
+
+.del-btn {
+  color: #bb002f;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #455a64;
+  color: #eceff1;
+  padding: 15px 30px;
+  border-radius: 15px;
+}
+
+.show {
+  display: block;
+}
+
+.modal div {
+  margin: 15px 0;
+}
+
+div.submit {
+  margin-top: 25px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.text label {
+  display: block;
+  margin-bottom: 5px;
+}
