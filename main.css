@@ -24,6 +24,7 @@ button {
 }
 
 .info-div p {
+  white-space: nowrap;
   padding: 10px;
   background-color: #607d8b ;
   border-radius: 10px;
