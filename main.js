@@ -24,26 +24,19 @@ function showModal() {
   });
 }
 
-function addTitleRow() {
-  const titleRow = document.createElement('div');
-  titleRow.classList.add('title-row');
-  for (let property in myLibrary[0]) {
-    if (property === 'info') continue;
-
-    const title = document.createElement('div');
-    title.classList.add(`${property}-div`);
-    title.textContent = property;
-    titleRow.appendChild(title);
-  }
-
+function addBookCards() {
   const infoDiv = document.querySelector('.info-div');
-  infoDiv.appendChild(titleRow);
+
+  for (let i = 0; i < myLibrary.length; i++) {
+    const card = document.createElement('div');
+    card.classList.add('card');
+    infoDiv.appendChild(card);
+  }
 }
 
-function addDescRows() {
+function addDescs() {
   for (let i = 0; i < myLibrary.length; i++) {
-    const bookRow = document.createElement('div');
-    bookRow.classList.add('book-row');
+    const card = document.querySelector(`.card:nth-of-type(${i + 1})`);
 
     for (let property in myLibrary[i]) {
       if (property === 'info') continue;
@@ -51,14 +44,12 @@ function addDescRows() {
       const bookProperty = document.createElement('div');
       bookProperty.classList.add(`${property}-div`);
       bookProperty.textContent = myLibrary[i][property];
-      bookRow.appendChild(bookProperty);
+      card.appendChild(bookProperty);
     }
-    const infoDiv = document.querySelector('.info-div');
-    infoDiv.appendChild(bookRow);
   }
 }
 
-function addBtnRows(task) {
+function addBtn(task) {
   for (let i = 0; i < myLibrary.length; i++) {
     const btn = document.createElement('button');
     btn.dataset.targetTitle = myLibrary[i].title;
@@ -72,8 +63,8 @@ function addBtnRows(task) {
       btn.addEventListener('click', toggleRead)
     }
 
-    const bookRow = document.querySelector(`.book-row:nth-of-type(${i + 2})`);
-    bookRow.appendChild(btn);
+    const card = document.querySelector(`.card:nth-of-type(${i + 1})`);
+    card.appendChild(btn);
   }
 }
 
@@ -84,12 +75,10 @@ function render() {
   infoDiv.classList.add('info-div');
   mainDiv.appendChild(infoDiv);
 
-  addTitleRow();
-  addDescRows();
-  addBtnRows('delete');
-  addBtnRows('toggleRead');
-
-  setPropertyWidth();
+  addBookCards();
+  addDescs()
+  addBtn('delete');
+  addBtn('toggleRead')
 }
 
 function clearInfo() {
@@ -147,33 +136,6 @@ function addEventListeners() {
 
   const cancelBtn = document.querySelector('.cancel-btn');
   cancelBtn.addEventListener('click', showModal);
-}
-
-function setPropertyWidth() {
-  Object.keys(myLibrary[0]).forEach((property, index) => {
-    if (property === 'info') return;
-
-    let maxLength = 0;
-    let BookIndexOfMax;
-    for (let i = 0; i < myLibrary.length; i++) {
-      const bookIndex = i;
-      const length = myLibrary[i][property].toString().length;
-
-      if (length > maxLength) {
-        maxLength = length;
-        BookIndexOfMax = bookIndex;
-      }
-    }
-
-    const maxDiv = document.querySelector(`.book-row:nth-of-type(${BookIndexOfMax + 2}) div:nth-of-type(${index + 1})`);
-    const maxDivWidth = maxDiv.offsetWidth;
-
-    const propertyDivs = document.querySelectorAll(`.${property}-div`);
-    propertyDivs.forEach(div => {
-      div.style.width = `${maxDivWidth}px`;
-    });
-
-  });
 }
 
 const myLibrary = [];
