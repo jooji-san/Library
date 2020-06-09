@@ -24,17 +24,41 @@ function showModal() {
   });
 }
 
-function addBtnCols(task) {
-  const colBtn = document.createElement('div');
-  colBtn.classList.add('col-btn');
+function addTitleRow() {
+  const titleRow = document.createElement('div');
+  titleRow.classList.add('title-row');
+  for (let property in myLibrary[0]) {
+    if (property === 'info') continue;
 
-  const emptyDiv = document.createElement('div');
-  emptyDiv.classList.add('empty');
-  colBtn.appendChild(emptyDiv);
+    const title = document.createElement('div');
+    title.classList.add(`${property}-div`);
+    title.textContent = property;
+    titleRow.appendChild(title);
+  }
 
-  const btnDiv = document.createElement('div');
-  btnDiv.classList.add('btn-div');
+  const infoDiv = document.querySelector('.info-div');
+  infoDiv.appendChild(titleRow);
+}
 
+function addDescRows() {
+  for (let i = 0; i < myLibrary.length; i++) {
+    const bookRow = document.createElement('div');
+    bookRow.classList.add('book-row');
+
+    for (let property in myLibrary[i]) {
+      if (property === 'info') continue;
+
+      const bookProperty = document.createElement('div');
+      bookProperty.classList.add(`${property}-div`);
+      bookProperty.textContent = myLibrary[i][property];
+      bookRow.appendChild(bookProperty);
+    }
+    const infoDiv = document.querySelector('.info-div');
+    infoDiv.appendChild(bookRow);
+  }
+}
+
+function addBtnRows(task) {
   for (let i = 0; i < myLibrary.length; i++) {
     const btn = document.createElement('button');
     btn.dataset.targetTitle = myLibrary[i].title;
@@ -48,35 +72,8 @@ function addBtnCols(task) {
       btn.addEventListener('click', toggleRead)
     }
 
-    btnDiv.appendChild(btn);
-  }
-
-  colBtn.appendChild(btnDiv);
-
-  const infoDiv = document.querySelector('.info-div');
-  infoDiv.appendChild(colBtn);
-}
-
-function addDescCols() {
-  for (let property in myLibrary[0]) {
-    if (property === 'info') continue;
-
-    const column = document.createElement('div');
-    column.classList.add('column');
-
-    const colTitle = document.createElement('p');
-    colTitle.classList.add('col-title')
-    colTitle.textContent = property;
-    column.appendChild(colTitle);
-
-    for (let i = 0; i < myLibrary.length; i++) {
-      const value = document.createElement('p');
-      value.textContent = myLibrary[i][property];
-      column.appendChild(value);
-    }
-
-    const infoDiv = document.querySelector('.info-div');
-    infoDiv.appendChild(column);
+    const bookRow = document.querySelector(`.book-row:nth-of-type(${i + 2})`);
+    bookRow.appendChild(btn);
   }
 }
 
@@ -87,10 +84,12 @@ function render() {
   infoDiv.classList.add('info-div');
   mainDiv.appendChild(infoDiv);
 
-  addDescCols();
+  addTitleRow();
+  addDescRows();
+  addBtnRows('delete');
+  addBtnRows('toggleRead');
 
-  addBtnCols('delete');
-  addBtnCols('toggleRead')
+  setPropertyWidth();
 }
 
 function clearInfo() {
@@ -121,7 +120,6 @@ function toggleRead(e) {
 
 function readAndWrite() {
   const book = new Book();
-  console.log(book);
 
   const textInputs = document.querySelectorAll('[type="text"]');
   textInputs.forEach(textInput => {
@@ -133,8 +131,6 @@ function readAndWrite() {
   radioInputs.forEach(radioInput => {
     if (radioInput.checked) book[radioInput.name] = radioInput.value;
   });
-
-  console.log(book);
 
   addBookToLibrary(book);
   showModal();
@@ -151,6 +147,33 @@ function addEventListeners() {
 
   const cancelBtn = document.querySelector('.cancel-btn');
   cancelBtn.addEventListener('click', showModal);
+}
+
+function setPropertyWidth() {
+  Object.keys(myLibrary[0]).forEach((property, index) => {
+    if (property === 'info') return;
+
+    let maxLength = 0;
+    let BookIndexOfMax;
+    for (let i = 0; i < myLibrary.length; i++) {
+      const bookIndex = i;
+      const length = myLibrary[i][property].toString().length;
+
+      if (length > maxLength) {
+        maxLength = length;
+        BookIndexOfMax = bookIndex;
+      }
+    }
+
+    const maxDiv = document.querySelector(`.book-row:nth-of-type(${BookIndexOfMax + 2}) div:nth-of-type(${index + 1})`);
+    const maxDivWidth = maxDiv.offsetWidth;
+
+    const propertyDivs = document.querySelectorAll(`.${property}-div`);
+    propertyDivs.forEach(div => {
+      div.style.width = `${maxDivWidth}px`;
+    });
+
+  });
 }
 
 const myLibrary = [];
