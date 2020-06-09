@@ -1,6 +1,12 @@
+* {
+  /* border: 1px black solid; */
+  box-sizing: content-box;
+}
+
 body {
-  background-color: #263238;
+  background-color: #191919;
   font-family: Arial, Helvetica, sans-serif;
+  color: #eceff1;
 }
 
 button {
@@ -11,55 +17,49 @@ button {
   margin: 20px;
   padding: 5px;
   color: #005005;
+  display: block;
 }
 
 .info-div {
   margin: 0 20px;
-  color: #eceff1;
-  display: flex;
-}
-
-.column {
-  margin-right: 5px;
-}
-
-.info-div p {
-  white-space: nowrap;
-  padding: 10px;
-  background-color: #607d8b ;
-  border-radius: 10px;
+  display: inline-flex;
+  flex-direction: column;
   text-align: center;
 }
 
-p.col-title {
-  margin: 0;
-  background-color: #34515e;
-  font-size: 20px;
-}
-
-.col-btn {
-  margin: 0 7px;
+.title-row {
   display: flex;
-  flex-direction: column;
+  margin-bottom: 15px;
+  padding-left: 7px
 }
 
-.empty {
-  height: 43px;
+.title-row div {
+  margin-right: 7px;
+  padding: 15px;
+  background-color: teal;
+  border-radius: 15px;
+  font-size: 18px;
+  font-weight: 900;
 }
 
-.btn-div {
-  flex-grow: 1;
+.book-row {
   display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
+  background-color: #333533;
+  margin-bottom: 15px;
+  padding: 7px;
+  border-radius: 15px;
 }
 
-.btn-div button {
-  padding: 5px;
+.book-row div {
+  margin-right: 7px;
+  padding: 15px;
+  background-color: #d05353;
+  border-radius: 15px;
 }
 
 .del-btn {
   color: #bb002f;
+  margin-right: 7px;
 }
 
 .modal {
