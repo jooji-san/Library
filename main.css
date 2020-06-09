@@ -24,6 +24,7 @@ button {
 .info-div {
   display: flex;
   justify-content: center;
+  align-items: stretch;
   text-align: center;
   flex-wrap: wrap;
 }
@@ -38,6 +39,10 @@ button {
   margin-bottom: 20px;
 }
 
+@media (width < 500px) {
+  .card { flex-grow: 1; }
+}
+
 .card div {
   padding: 10px;
   background-color: #d05353;
@@ -45,9 +50,13 @@ button {
   margin-bottom: 10px;
 }
 
+.card button {
+  padding: 5px;
+}
+
 .del-btn {
   color: #bb002f;
-  margin-bottom: 7px;
+  margin-bottom: 10px;
 }
 
 .modal {
