@@ -120,11 +120,12 @@ function readAndWrite() {
   const radioInputs = document.querySelectorAll('[type="radio"]');
   radioInputs.forEach(radioInput => {
     if (radioInput.checked) {
-      book['read'] = radioInput.value;
+      book.read = radioInput.value;
     }
   });
   if (!book['read']) {
-    book['read'] === 'n/a';
+    book.read = 'n/a';
+    console.log('hehe')
   }
 
   addBookToLibrary(book);
