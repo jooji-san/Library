@@ -24,11 +24,12 @@ button {
 .info-div {
   display: flex;
   justify-content: center;
+  align-items: stretch;
   text-align: center;
   flex-wrap: wrap;
 }
 
-.card{
+.card {
   display: flex;
   flex-direction: column;
   background-color: #333533;
@@ -38,45 +39,80 @@ button {
   margin-bottom: 20px;
 }
 
+@media (width < 600px) {
+  .card {
+    flex-grow: 1;
+    margin-left: 20px;
+  }
+
+  .input-div div {
+    flex-grow: 1;
+  }
+}
+
 .card div {
   padding: 10px;
-  background-color: #d05353;
-  border-radius: 10px;
+  background-color: #686868;
+  border-radius: 5px;
   margin-bottom: 10px;
+}
+
+.card button {
+  padding: 5px;
 }
 
 .del-btn {
   color: #bb002f;
-  margin-bottom: 7px;
+  margin-bottom: 10px;
 }
 
 .modal {
   display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #455a64;
+  background-color: #272727;
   color: #eceff1;
-  padding: 15px 30px;
-  border-radius: 15px;
+  padding: 20px;
 }
 
 .show {
   display: block;
 }
 
-.modal div {
-  margin: 15px 0;
+.input-div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 }
 
-div.submit {
-  margin-top: 25px;
+.input-div div {
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+.input-div .text {
   display: flex;
-  justify-content: space-around;
+  flex-direction: column;
+}
+
+.radio {
+  display: flex;
+  flex-direction: column;
+  align-items : center;
+  min-width: 250.3px;
+}
+
+#radio-choice-1 {
+  margin-right: 10px;
+}
+
+.submit {
+  text-align: center;
+}
+
+.submit button {
+  margin-right: 10px;
 }
 
 .text label {
-  display: block;
   margin-bottom: 5px;
 }

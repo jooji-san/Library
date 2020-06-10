@@ -2,3 +2,5 @@
 * create rows for each book, instead of columns for each property
 * find the largest text, then its paragraph's width and set it as min-width for all paragraphs in the column;
 * if div exceeds the size of the viewport then change the layout. add a class.
+
+* fix margins when on mobile
