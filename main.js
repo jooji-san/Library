@@ -96,6 +96,7 @@ function deleteBook(e) {
 
   clearInfo();
   render();
+  set();
 }
 
 function toggleRead(e) {
@@ -112,19 +113,25 @@ function readAndWrite() {
 
   const textInputs = document.querySelectorAll('[type="text"]');
   textInputs.forEach(textInput => {
-    book[textInput.name] = textInput.value;
+    book[textInput.name] = textInput.value || 'n/a';
     textInput.value = '';
   });
 
-  const radioInputs = document.querySelectorAll('[type="radio"]')
+  const radioInputs = document.querySelectorAll('[type="radio"]');
   radioInputs.forEach(radioInput => {
-    if (radioInput.checked) book[radioInput.name] = radioInput.value;
+    if (radioInput.checked) {
+      book['read'] = radioInput.value;
+    }
   });
+  if (!book['read']) {
+    book['read'] === 'n/a';
+  }
 
   addBookToLibrary(book);
   showModal();
   clearInfo();
   render();
+  set();
 }
 
 function addEventListeners() {
@@ -138,10 +145,29 @@ function addEventListeners() {
   cancelBtn.addEventListener('click', showModal);
 }
 
-const myLibrary = [];
+function get() {
+  myLibrary = JSON.parse(localStorage.getItem('myLibrary'));
+}
+
+function set() {
+  localStorage.setItem('myLibrary', JSON.stringify(myLibrary));
+}
+
+function SaveOnStart() {
+  if (localStorage.getItem('myLibrary')) {
+    get();
+  } else {
+    set();
+  }
+}
+
+
+let myLibrary = [];
 
 addBookToLibrary(new Book('Hobbit', 'J. R. R. Tolkien', 288, true));
 addBookToLibrary(new Book('The Temple of the golden pavillion', 'Yukio Mishima', 270, false));
+
+SaveOnStart();
 
 render();
 addEventListeners();
