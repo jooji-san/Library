@@ -76,9 +76,7 @@ const save = (function () {
   }
 
   function get() {
-    console.log(library.get())
     library.set(JSON.parse(localStorage.getItem('myLibrary')));
-    console.log(library.get())
   }
 
   function set() {
