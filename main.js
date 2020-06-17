@@ -1,174 +1,204 @@
 'use strict';
 
-function Book(title, author, pages, read) {
-  this.title = title;
-  this.author = author;
-  this.pages = pages;
-  this.read = read;
-  this.info = function () {
-    return `${title} by ${author}, ${pages} pages, ${read ? 'read it' : 'not read yet'}`;
+class Book {
+  constructor(title, author, pages, read) {
+    this.title = title;
+    this.author = author;
+    this.pages = pages;
+    this.read = read;
+    this.info = function () {
+      return `${title} by ${author}, ${pages} pages, ${read ? 'read it' : 'not read yet'}`;
+    };
+  }
+}
+
+const library = (function () {
+  let myLibrary = [
+    new Book('Hobbit', 'J. R. R. Tolkien', 288, true),
+    new Book('The Temple of the golden pavillion', 'Yukio Mishima', 270, false),
+  ];
+
+  function get() {
+    return myLibrary;
+  }
+
+  function set(value) {
+    myLibrary = value;
+  }
+
+  function remove(e) {
+    myLibrary.splice(getTargetBookIndex(e), 1);
+  }
+
+  function toggleRead(e) {
+    const targetBook = myLibrary[getTargetBookIndex(e)];
+    targetBook.read = targetBook.read ? false : true;
+  }
+
+  function getTargetBookIndex(e) {
+    const bookTitle = e.target.dataset.targetTitle;
+    const bookIndex = myLibrary.findIndex(book => book.title === bookTitle);
+    return bookIndex;
+  }
+
+  function add() {
+    const book = new Book();
+
+    const textInputs = document.querySelectorAll('[type="text"]');
+    textInputs.forEach(textInput => {
+      book[textInput.name] = textInput.value || 'n/a';
+      textInput.value = '';
+    });
+
+    const radioInputs = document.querySelectorAll('[type="radio"]');
+    radioInputs.forEach(radioInput => {
+      if (radioInput.checked) {
+        book.read = radioInput.value;
+      }
+    });
+    if (!book['read']) {
+      book.read = 'n/a';
+    }
+
+    myLibrary.push(book);
+  }
+
+  return { get, set, remove, add, toggleRead }
+})();
+
+const save = (function () {
+  function init() {
+    if (localStorage.getItem('myLibrary')) {
+      get();
+    } else {
+      set();
+    }
+  }
+
+  function get() {
+    console.log(library.get())
+    library.set(JSON.parse(localStorage.getItem('myLibrary')));
+    console.log(library.get())
+  }
+
+  function set() {
+    localStorage.setItem('myLibrary', JSON.stringify(library.get()));
+  }
+
+  return { init, set }
+})();
+
+const displayController = (function () {
+  function toggleModal() {
+    const modal = document.querySelector('.modal');
+    modal.classList.toggle('show');
+
+    const textInputs = document.querySelectorAll('[type="text"]');
+    textInputs.forEach(textInput => {
+      textInput.value = '';
+    });
+  }
+
+  function render() {
+
+    const mainDiv = document.querySelector('.main');
+
+    const infoDiv = document.createElement('div');
+    infoDiv.classList.add('info-div');
+    mainDiv.appendChild(infoDiv);
+
+    addBookCards();
+    addDescs();
+    addBtn('delete');
+    addBtn('toggleRead');
   };
-}
 
-function addBookToLibrary(obj) {
-  myLibrary.push(obj);
-}
+  function addBookCards() {
+    const infoDiv = document.querySelector('.info-div');
 
-function showModal() {
-  const modal = document.querySelector('.modal');
-  modal.classList.toggle('show');
-
-  const textInputs = document.querySelectorAll('[type="text"]');
-  textInputs.forEach(textInput => {
-    textInput.value = '';
-  });
-}
-
-function addBookCards() {
-  const infoDiv = document.querySelector('.info-div');
-
-  for (let i = 0; i < myLibrary.length; i++) {
-    const card = document.createElement('div');
-    card.classList.add('card');
-    infoDiv.appendChild(card);
-  }
-}
-
-function addDescs() {
-  for (let i = 0; i < myLibrary.length; i++) {
-    const card = document.querySelector(`.card:nth-of-type(${i + 1})`);
-
-    for (let property in myLibrary[i]) {
-      if (property === 'info') continue;
-
-      const bookProperty = document.createElement('div');
-      bookProperty.classList.add(`${property}-div`);
-      bookProperty.textContent = myLibrary[i][property];
-      card.appendChild(bookProperty);
+    for (let i = 0; i < library.get().length; i++) {
+      const card = document.createElement('div');
+      card.classList.add('card');
+      infoDiv.appendChild(card);
     }
   }
-}
 
-function addBtn(task) {
-  for (let i = 0; i < myLibrary.length; i++) {
-    const btn = document.createElement('button');
-    btn.dataset.targetTitle = myLibrary[i].title;
+  function addDescs() {
+    for (let i = 0; i < library.get().length; i++) {
+      const card = document.querySelector(`.card:nth-of-type(${i + 1})`);
 
-    if (task === 'delete') {
-      btn.classList.add('del-btn')
-      btn.textContent = 'delete';
-      btn.addEventListener('click', deleteBook);
-    } else if (task === 'toggleRead') {
-      btn.textContent = 'toggle Read';
-      btn.addEventListener('click', toggleRead)
+      for (let property in library.get()[i]) {
+        if (property === 'info') continue;
+
+        const bookProperty = document.createElement('div');
+        bookProperty.classList.add(`${property}-div`);
+        bookProperty.textContent = library.get()[i][property];
+        card.appendChild(bookProperty);
+      }
     }
-
-    const card = document.querySelector(`.card:nth-of-type(${i + 1})`);
-    card.appendChild(btn);
   }
-}
 
-function render() {
-  const mainDiv = document.querySelector('.main');
+  function addBtn(task) {
+    for (let i = 0; i < library.get().length; i++) {
+      const btn = document.createElement('button');
+      btn.dataset.targetTitle = library.get()[i].title;
 
-  const infoDiv = document.createElement('div');
-  infoDiv.classList.add('info-div');
-  mainDiv.appendChild(infoDiv);
+      if (task === 'delete') {
+        btn.classList.add('del-btn')
+        btn.textContent = 'delete';
+        btn.addEventListener('click', handleDeleteBtn);
+      } else if (task === 'toggleRead') {
+        btn.textContent = 'toggle Read';
+        btn.addEventListener('click', handleToggleReadBtn);
+      }
 
-  addBookCards();
-  addDescs()
-  addBtn('delete');
-  addBtn('toggleRead')
-}
-
-function clearInfo() {
-  document.querySelector('.info-div').remove();
-}
-
-function getTargetBookIndex(e) {
-  const bookTitle = e.target.dataset.targetTitle;
-  const bookIndex = myLibrary.findIndex(book => book.title === bookTitle);
-  return bookIndex;
-}
-
-function deleteBook(e) {
-  myLibrary.splice(getTargetBookIndex(e), 1);
-
-  clearInfo();
-  render();
-  set();
-}
-
-function toggleRead(e) {
-  const targetBook = myLibrary[getTargetBookIndex(e)];
-
-  targetBook.read = targetBook.read ? false : true;
-
-  clearInfo();
-  render();
-}
-
-function readAndWrite() {
-  const book = new Book();
-
-  const textInputs = document.querySelectorAll('[type="text"]');
-  textInputs.forEach(textInput => {
-    book[textInput.name] = textInput.value || 'n/a';
-    textInput.value = '';
-  });
-
-  const radioInputs = document.querySelectorAll('[type="radio"]');
-  radioInputs.forEach(radioInput => {
-    if (radioInput.checked) {
-      book.read = radioInput.value;
+      const card = document.querySelector(`.card:nth-of-type(${i + 1})`);
+      card.appendChild(btn);
     }
-  });
-  if (!book['read']) {
-    book.read = 'n/a';
-    console.log('hehe')
   }
 
-  addBookToLibrary(book);
-  showModal();
-  clearInfo();
-  render();
-  set();
-}
-
-function addEventListeners() {
-  const addBtn = document.querySelector('.add-btn');
-  addBtn.addEventListener('click', showModal);
-
-  const okBtn = document.querySelector('.ok-btn');
-  okBtn.addEventListener('click', readAndWrite);
-
-  const cancelBtn = document.querySelector('.cancel-btn');
-  cancelBtn.addEventListener('click', showModal);
-}
-
-function get() {
-  myLibrary = JSON.parse(localStorage.getItem('myLibrary'));
-}
-
-function set() {
-  localStorage.setItem('myLibrary', JSON.stringify(myLibrary));
-}
-
-function SaveOnStart() {
-  if (localStorage.getItem('myLibrary')) {
-    get();
-  } else {
-    set();
+  function handleDeleteBtn(e) {
+    library.remove(e);
+    refresh();
   }
-}
 
+  function handleToggleReadBtn(e) {
+    library.toggleRead(e);
+    refresh();
+  }
 
-let myLibrary = [];
+  function clear() {
+    document.querySelector('.info-div').remove();
+  }
 
-addBookToLibrary(new Book('Hobbit', 'J. R. R. Tolkien', 288, true));
-addBookToLibrary(new Book('The Temple of the golden pavillion', 'Yukio Mishima', 270, false));
+  function refresh() {
+    clear();
+    render();
+    save.set();
+  }
 
-SaveOnStart();
+  (function addEventListeners() {
+    const addBtn = document.querySelector('.add-btn');
+    addBtn.addEventListener('click', toggleModal);
 
-render();
-addEventListeners();
+    const okBtn = document.querySelector('.ok-btn');
+    okBtn.addEventListener('click', handleOkButton);
+
+    const cancelBtn = document.querySelector('.cancel-btn');
+    cancelBtn.addEventListener('click', toggleModal);
+  })();
+
+  function handleOkButton() {
+    library.add();
+    toggleModal();
+    refresh();
+  }
+
+  return { render }
+})();
+
+// addBookToLibrary(new Book('Hobbit', 'J. R. R. Tolkien', 288, true));
+// addBookToLibrary(new Book('The Temple of the golden pavillion', 'Yukio Mishima', 270, false));
+
+save.init();
+displayController.render();
